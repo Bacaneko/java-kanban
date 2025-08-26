@@ -18,6 +18,7 @@ public class TaskManager {
         return epicList;
     }
 
+
     public void deleteTasks() {
         if (taskList.isEmpty()) {
             System.out.println("Список задач пуст. Нет задач к удалению");
@@ -31,6 +32,11 @@ public class TaskManager {
             System.out.println("Список подзадач пуст. Нет подзадач к удалению");
             return;
         }
+        for (SubTask value : subtaskList.values()) {
+            Epic epic = epicList.get(value.getEpicId());
+            epic.removeAllSubtasks();
+            checkEpicSubTasks(epic);
+        }
         subtaskList.clear();
     }
 
@@ -39,11 +45,7 @@ public class TaskManager {
             System.out.println("Список эпиков пуст. Нет эпиков к удалению");
             return;
         }
-        for (Epic epic : epicList.values()) {
-            for (SubTask subTask : epic.getSubTasks()) {
-                subtaskList.remove(subTask.getId());
-            }
-        }
+        subtaskList.clear();
         epicList.clear();
     }
 
@@ -61,7 +63,7 @@ public class TaskManager {
         return subtaskList.get(id);
     }
 
-    public Task getEpic(int id) {
+    public Epic getEpic(int id) {
         if (epicList.get(id) == null) {
             System.out.println("Эпик не существует");
         }
@@ -77,16 +79,13 @@ public class TaskManager {
         task.setId(id);
         taskList.put(id, task);
     }
-    // проверить целесообразность проверки типа Epic
+
     public void addSubtask(SubTask subTask) {
         if (subTask == null) {
             System.out.println("Подзадача не существует");
             return;
         }
-        if (!epicList.containsKey(subTask.getEpicId()) || !(epicList.get(subTask.getEpicId()) instanceof Epic epic)) {
-            System.out.println("Эпик для подзадачи " + subTask.getName() + " не существует");
-            return;
-        }
+        Epic epic = epicList.get(subTask.getEpicId());
         int id = generateId();
         subTask.setId(id);
         epic.addSubTask(subTask);
@@ -121,6 +120,9 @@ public class TaskManager {
             System.out.println("Нельзя менять связь с эпиком");
             return;
         }
+        Epic epic = epicList.get(subtask.getEpicId());
+        epic.deleteSubtask(subtaskList.get(subtask.getId()));
+        epic.addSubTask(subtask);
         subtaskList.put(subtask.getId(), subtask);
         checkEpicSubTasks(epicList.get(subtask.getEpicId()));
     }
@@ -130,10 +132,16 @@ public class TaskManager {
             System.out.println("Нельзя обновить несуществующую задачу");
             return;
         }
-        epicList.put(epic.getId(), epic);
-        checkEpicSubTasks(epic);
+        if (epic.getSubTasks().size() != epicList.get(epic.getId()).getSubTasks().size()
+                || epic.getStatus() != epicList.get(epic.getId()).getStatus()) {
+            System.out.println("Нельзя обновлять внутренние данные вручную, не относящиеся к изменяемым");
+            return;
+        }
+        Epic existingEpic = epicList.get(epic.getId());
+        existingEpic.setName(epic.getName());
+        existingEpic.setDescription(epic.getDescription());
+        checkEpicSubTasks(existingEpic);
     }
-
 
     public void deleteTaskById(int taskId) {
         if (!taskList.containsKey(taskId)) {
@@ -151,7 +159,7 @@ public class TaskManager {
         SubTask subTask = subtaskList.get(subtaskId);
         Epic epic = epicList.get(subTask.getEpicId());
         if (epic != null) {
-            epic.getSubTasks().remove(subTask);  // Удаляем объект
+            epic.deleteSubtask(subTask);
             checkEpicSubTasks(epic);
         }
         subtaskList.remove(subtaskId);
@@ -166,7 +174,7 @@ public class TaskManager {
         for (SubTask subTask : new ArrayList<>(epic.getSubTasks())) {
             subtaskList.remove(subTask.getId());
         }
-        epic.getSubTasks().clear();
+        epic.removeAllSubtasks();
         epicList.remove(epicId);
     }
 
