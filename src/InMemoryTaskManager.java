@@ -1,3 +1,8 @@
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import model.TaskStatus;
+
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -5,7 +10,11 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> taskList = new HashMap<>();
     private final Map<Integer, SubTask> subtaskList = new HashMap<>();
     private final Map<Integer, Epic> epicList = new HashMap<>();
+    private final HistoryManager inMemoryHistoryManager;
 
+    public InMemoryTaskManager() {
+        inMemoryHistoryManager = Managers.getDefaultHistoryManager();
+    }
 
     @Override
     public Map<Integer, Task> getTasks() {
@@ -61,7 +70,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (taskList.get(id) == null) {
             System.out.println("Задача не существует");
         }
-        return taskList.get(id);
+        Task task = taskList.get(id);
+        inMemoryHistoryManager.addTaskInHistory(task);
+        return task;
     }
 
     @Override
@@ -69,7 +80,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtaskList.get(id) == null) {
             System.out.println("Подзадача не существует");
         }
-        return subtaskList.get(id);
+
+        SubTask subTask = subtaskList.get(id);
+        inMemoryHistoryManager.addTaskInHistory(subTask);
+        return subTask;
     }
 
     @Override
@@ -77,7 +91,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicList.get(id) == null) {
             System.out.println("Эпик не существует");
         }
-        return epicList.get(id);
+
+        Epic epic = epicList.get(id);
+        inMemoryHistoryManager.addTaskInHistory(epic);
+        return epic;
     }
 
     @Override
@@ -97,8 +114,9 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Подзадача не существует");
             return;
         }
-        if (!epicList.containsKey(subTask.getEpicId())) {
+        if (!epicList.containsKey(subTask.getEpicId()) || epicList.get(subTask.getEpicId()) == null) {
             System.out.println("Эпик для подзадачи " + subTask.getName() + " не существует");
+            return;
         }
         Epic epic = epicList.get(subTask.getEpicId());
         int id = generateId();
@@ -214,6 +232,14 @@ public class InMemoryTaskManager implements TaskManager {
         return ++tasksCounter;
     }
 
+    public void resetCounter() {
+        tasksCounter = 0;
+    }
+
+    public List<Task> getHistory() {
+        return inMemoryHistoryManager.getHistory();
+    }
+
     private void checkEpicSubTasks(Epic epic) {
         if (epic == null || epic.getSubTasks() == null) {
             System.out.println("Эпик не существует или не содержит подзадач");
@@ -233,4 +259,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(TaskStatus.IN_PROGRESS);
         }
     }
+
+
+
+
 }

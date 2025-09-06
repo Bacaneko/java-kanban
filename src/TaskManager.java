@@ -1,4 +1,7 @@
-import java.util.ArrayList;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+
 import java.util.List;
 import java.util.Map;
 
@@ -40,5 +43,4 @@ public interface TaskManager {
     void deleteEpicById(int epicId);
 
     List<SubTask> getSubtasksOfEpic(int epicId);
-
 }
