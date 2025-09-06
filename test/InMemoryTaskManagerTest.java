@@ -10,15 +10,13 @@ import java.util.List;
 public class InMemoryTaskManagerTest {
 
     private static InMemoryTaskManager inMemoryTaskManager = null;
-    private static HistoryManager inMemoryHistoryManager = null;
-    private static ArrayList<Task> listTestTasks = new ArrayList<>();
-    private static ArrayList<SubTask> listTestSubtasks = new ArrayList<>();
-    private static ArrayList<Epic> listTestEpics = new ArrayList<>();
+    private final static ArrayList<Task> listTestTasks = new ArrayList<>();
+    private final static ArrayList<SubTask> listTestSubtasks = new ArrayList<>();
+    private final static ArrayList<Epic> listTestEpics = new ArrayList<>();
 
     @BeforeEach
     public  void beforeAll() {
         inMemoryTaskManager = (InMemoryTaskManager) Managers.getDefault();
-        inMemoryHistoryManager = Managers.getDefaultHistoryManager();
 
         Task task1 = new Task("Task 1", "Task description 1", TaskStatus.NEW); //id 1
         Task task2 = new Task("Task 2", "Task description 2", TaskStatus.IN_PROGRESS); //id 2
@@ -67,7 +65,6 @@ public class InMemoryTaskManagerTest {
         inMemoryTaskManager.deleteSubtasks();
         inMemoryTaskManager.deleteEpics();
         inMemoryTaskManager = null;
-        inMemoryHistoryManager = null;
         listTestTasks.clear();
         listTestSubtasks.clear();
         listTestEpics.clear();

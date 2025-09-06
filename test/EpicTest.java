@@ -102,10 +102,10 @@ class EpicTest {
 
         Epic diffName = new Epic("Diff Name", "This is an epic description");
         diffName.setId(1);
-        assertFalse(epic.equals(diffName));
+        assertNotEquals(epic, diffName);
 
         Epic diffDesc = new Epic("Test Epic", "Diff desc");
         diffDesc.setId(1);
-        assertFalse(epic.equals(diffDesc));
+        assertNotEquals(epic, diffDesc);
     }
 }
