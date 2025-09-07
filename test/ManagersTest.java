@@ -1,4 +1,6 @@
 import org.junit.jupiter.api.Test;
+import service.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManagersTest {
@@ -6,16 +8,16 @@ class ManagersTest {
     @Test
     void shouldGetDefaultReturnsTaskManager() {
         TaskManager taskManager = Managers.getDefault();
-        assertNotNull(taskManager, "TaskManager не должен быть null");
+        assertNotNull(taskManager, "service.TaskManager не должен быть null");
         assertInstanceOf(InMemoryTaskManager.class, taskManager,
-                "Должен возвращать экземпляр InMemoryTaskManager");
+                "Должен возвращать экземпляр service.InMemoryTaskManager");
     }
 
     @Test
     void shouldGetDefaultHistoryManagerReturnsHistoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
-        assertNotNull(historyManager, "HistoryManager не должен быть null");
+        assertNotNull(historyManager, "service.HistoryManager не должен быть null");
         assertInstanceOf(InMemoryHistoryManager.class, historyManager,
-                "Должен возвращать экземпляр InMemoryHistoryManager");
+                "Должен возвращать экземпляр service.InMemoryHistoryManager");
     }
 }
