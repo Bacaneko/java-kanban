@@ -17,7 +17,7 @@ public class InMemoryTaskManagerTest {
     private final static ArrayList<Epic> listTestEpics = new ArrayList<>();
 
     @BeforeEach
-    public  void beforeAll() {
+    public void beforeAll() {
         inMemoryTaskManager = (InMemoryTaskManager) Managers.getDefault();
 
         Task task1 = new Task("Task 1", "Task description 1", TaskStatus.NEW); //id 1
@@ -74,19 +74,19 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void shouldGetTasks() {
-        ArrayList<Task>  list = new ArrayList<>(inMemoryTaskManager.getTasks().values());
+        ArrayList<Task> list = new ArrayList<>(inMemoryTaskManager.getTasks());
         Assertions.assertEquals(listTestTasks, list);
     }
 
     @Test
     public void shouldGetSubtasks() {
-        ArrayList<SubTask>  list = new ArrayList<>(inMemoryTaskManager.getSubtasks().values());
+        ArrayList<SubTask> list = new ArrayList<>(inMemoryTaskManager.getSubtasks());
         Assertions.assertEquals(listTestSubtasks, list);
     }
 
     @Test
     public void shouldGetEpics() {
-        ArrayList<Epic>  list = new ArrayList<>(inMemoryTaskManager.getEpics().values());
+        ArrayList<Epic> list = new ArrayList<>(inMemoryTaskManager.getEpics());
         Assertions.assertEquals(listTestEpics, list);
     }
 
