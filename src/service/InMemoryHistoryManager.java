@@ -17,14 +17,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         if (tasksHistory.size() == 10) {
             tasksHistory.removeFirst();
-            tasksHistory.add(task);
-        } else {
-            tasksHistory.add(task);
         }
+        tasksHistory.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
-        return tasksHistory;
+        return new ArrayList<>(tasksHistory);
     }
 }
